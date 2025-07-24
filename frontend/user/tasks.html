@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Available Tasks</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* --- Task Page Specific Styles --- */
+        #taskList { list-style: none; padding: 0; }
+        .task-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            border-left: 5px solid transparent;
+        }
+        .task-card:hover { transform: translateY(-3px); }
+        .task-card.video { border-color: #ff0000; } /* YouTube Red */
+        .task-card.website { border-color: #2196f3; } /* Blue for links */
+        .task-card.dynamic { border-color: var(--accent-color); } /* Orange for dynamic */
+
+        .task-icon { font-size: 28px; margin-right: 15px; width: 40px; text-align: center; }
+        .task-details h3 { margin: 0; font-size: 16px; font-weight: 600; }
+        .task-details p { margin: 3px 0 0; font-size: 13px; color: var(--text-muted-color); }
+        .task-reward { margin-left: auto; text-align: right; }
+        .task-reward .points { font-size: 16px; font-weight: 700; color: var(--primary-color); }
+        .task-reward .xp { font-size: 12px; color: var(--level-color); }
+        
+        /* --- Task Modal --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: none; align-items: center;
+            justify-content: center; z-index: 1000;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: var(--card-bg); padding: 20px; border-radius: 16px;
+            width: 95%; max-width: 400px; max-height: 90vh;
+            display: flex; flex-direction: column;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .modal-header h3 { margin: 0; }
+        .modal-close { font-size: 24px; cursor: pointer; color: var(--text-muted-color); }
+        .modal-body { overflow-y: auto; }
+        .modal-body p { margin-bottom: 15px; }
+        .task-timer { font-size: 20px; font-weight: 700; text-align: center; margin: 20px 0; color: var(--accent-color); }
+        .claim-button { width: 100%; margin-top: 20px; }
+        .claim-button:disabled { background: var(--secondary-color); color: var(--text-muted-color); cursor: not-allowed; }
+        #task-iframe { width: 100%; height: 200px; border: none; border-radius: 8px; }
+        #submission-area input, #submission-area textarea {
+            width: 100%; background: var(--secondary-color); border: 1px solid #555;
+            padding: 10px; border-radius: 8px; color: var(--text-color); margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main>
+            <h2 class="section-title">Complete Tasks, Earn Rewards</h2>
+            <p id="dailyLimitMessage" style="text-align:center; color: var(--accent-color); margin-bottom: 15px; display: none;"></p>
+            <ul id="taskList">
+                <div id="loader" class="loader"></div>
+            </ul>
+        </main>
+
+        <!-- Footer Navigation -->
+        <nav class="footer-nav">
+            <a href="dashboard.html" class="nav-button"><i class="icon fa-solid fa-house"></i>Home</a>
+            <a href="tasks.html" class="nav-button active"><i class="icon fa-solid fa-list-check"></i>Tasks</a>
+            <a href="wallet.html" class="nav-button"><i class="icon fa-solid fa-wallet"></i>Wallet</a>
+            <a href="referral.html" class="nav-button"><i class="icon fa-solid fa-share-nodes"></i>Referral</a>
+        </nav>
+    </div>
+
+    <!-- Task Execution Modal -->
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTaskTitle"></h3>
+                <span class="modal-close" id="modalCloseButton">×</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be injected by JS -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/tasks.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', tasks.init);
+    </script>
+</body>
+  </html>
