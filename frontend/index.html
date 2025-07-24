@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Welcome to the Platform</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .landing-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+        .logo {
+            font-size: 60px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 16px;
+            color: var(--text-muted-color);
+            max-width: 300px;
+            margin-bottom: 30px;
+        }
+        .action-button {
+            width: 80%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            background: var(--primary-color);
+            color: #000;
+            transition: all 0.3s ease;
+        }
+        .action-button:hover {
+             background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-container">
+        <div class="logo"><i class="fas fa-rocket"></i></div>
+        <h1>Welcome to Our Platform!</h1>
+        <p>Complete tasks, level up, and earn real rewards. Join our community and start your journey today.</p>
+        <button class="action-button" id="startButton">
+            <i class="fab fa-telegram-plane"></i> Start with Telegram
+        </button>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script>
+        document.getElementById('startButton').addEventListener('click', () => {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                const tgUser = Telegram.WebApp.initDataUnsafe.user;
+
+                if (!tgUser) {
+                    alert("Could not get user data. Please open this app through Telegram.");
+                    return;
+                }
+
+                // ব্যাকএন্ডে ব্যবহারকারীর স্ট্যাটাস চেক করার জন্য API কল
+                api.post('/auth/check-status', { userId: tgUser.id })
+                    .then(response => {
+                        if (response.data.isVerified) {
+                            window.location.href = 'user/dashboard.html';
+                        } else {
+                            window.location.href = 'verify_join.html';
+                        }
+                    })
+                    .catch(error => {
+                        // যদি ইউজার নতুন হয়, ভেরিফিকেশন পেজে পাঠাও
+                        if (error.response && error.response.status === 404) {
+                             window.location.href = 'verify_join.html';
+                        } else {
+                            alert('An error occurred. Please try again.');
+                            console.error(error);
+                        }
+                    });
+            } else {
+                alert("Please open this app inside Telegram.");
+            }
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+</body>
+</html>
