@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Verify Your Account</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .verification-container {
+            padding: 20px; text-align: center;
+        }
+        .channel-list { list-style: none; padding: 0; margin: 20px 0; }
+        .channel-item {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .channel-item .channel-name { font-weight: 600; }
+        .join-button {
+            padding: 8px 15px;
+            background: var(--primary-color);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .verify-button {
+            width: 100%; padding: 15px; border-radius: 12px; border: none; font-size: 18px;
+            font-weight: 700; cursor: pointer; background: var(--secondary-color); color: var(--primary-color);
+            margin-top: 20px;
+        }
+         .verify-button.loading {
+            pointer-events: none;
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-container">
+        <h2>Join Our Channels to Get Started</h2>
+        <p>To access all features, you must join our channels first. This helps us build a strong community.</p>
+        
+        <ul class="channel-list" id="channelList">
+            <!-- চ্যানেলগুলো JS দিয়ে ডাইনামিকভাবে লোড হবে -->
+            <p>Loading channels...</p>
+        </ul>
+        
+        <button class="verify-button" id="verifyButton">Verify My Membership</button>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script>
+        const channelList = document.getElementById('channelList');
+        const verifyButton = document.getElementById('verifyButton');
+        let tgUser = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                tgUser = Telegram.WebApp.initDataUnsafe.user;
+                if (!tgUser) {
+                    alert("Could not get user data.");
+                    return;
+                }
+                loadChannels();
+            }
+        });
+
+        function loadChannels() {
+            api.get('/auth/channels')
+                .then(response => {
+                    const channels = response.data;
+                    channelList.innerHTML = ''; // Clear loading text
+                    channels.forEach(channel => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'channel-item';
+                        listItem.innerHTML = `
+                            <span class="channel-name">${channel.name}</span>
+                            <a href="${channel.url}" target="_blank" class="join-button">Join</a>
+                        `;
+                        channelList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    channelList.innerHTML = '<p>Could not load channels. Please try again.</p>';
+                });
+        }
+
+        verifyButton.addEventListener('click', () => {
+            verifyButton.textContent = 'Verifying...';
+            verifyButton.classList.add('loading');
+
+            api.post('/auth/verify-join', { userId: tgUser.id, initData: Telegram.WebApp.initData })
+                .then(response => {
+                    if (response.data.success) {
+                        alert('Verification successful! Welcome aboard!');
+                        window.location.href = 'user/dashboard.html';
+                    } else {
+                        alert('Verification failed. Please make sure you have joined all channels.');
+                        verifyButton.textContent = 'Verify My Membership';
+                        verifyButton.classList.remove('loading');
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred during verification. Please try again.');
+                    verifyButton.textContent = 'Verify My Membership';
+                    verifyButton.classList.remove('loading');
+                });
+        });
+    </script>
+</body>
+</html>
