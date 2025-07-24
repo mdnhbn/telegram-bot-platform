@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* --- Dashboard Specific Styles --- */
+        .user-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+            background: linear-gradient(135deg, var(--primary-color), #00a651);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+            overflow: hidden;
+        }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-info .username { font-size: 20px; font-weight: 700; }
+        .user-info .level-badge {
+            background-color: var(--level-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 5px;
+            display: inline-block;
+        }
+        
+        .balance-overview .balance-value { font-size: 36px; font-weight: 800; text-align: center; }
+        .balance-overview .balance-label { text-align: center; color: var(--text-muted-color); font-size: 14px; margin-top: -5px; }
+        
+        .xp-bar-container { margin-top: 15px; }
+        .xp-bar-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted-color); margin-bottom: 5px; }
+        .xp-progress-bar { width: 100%; background: var(--secondary-color); border-radius: 10px; height: 10px; overflow: hidden; }
+        .xp-progress { background: var(--level-color); height: 100%; width: 0%; transition: width 0.5s ease; }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .action-card {
+            background: var(--card-bg);
+            padding: 20px 15px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        .action-card:hover {
+            transform: translateY(-5px);
+            background-color: var(--secondary-color);
+        }
+        .action-card .icon { font-size: 28px; color: var(--primary-color); margin-bottom: 10px; }
+        .action-card .title { font-weight: 600; font-size: 14px; }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main id="mainContent">
+            <div id="loader" class="loader"></div>
+            <div id="dashboardContent" style="display: none;">
+                <!-- User Header -->
+                <div class="user-header">
+                    <div class="user-avatar" id="avatar"></div>
+                    <div class="user-info">
+                        <h2 class="username" id="username"></h2>
+                        <span class="level-badge" id="levelBadge"></span>
+                    </div>
+                </div>
+
+                <!-- Balance & XP Card -->
+                <div class="card">
+                    <div class="balance-overview">
+                        <div class="balance-value" id="balance">0</div>
+                        <p class="balance-label">Points Balance</p>
+                    </div>
+                    <div class="xp-bar-container">
+                        <div class="xp-bar-labels">
+                            <span id="currentXp"></span>
+                            <span id="nextLevelXp"></span>
+                        </div>
+                        <div class="xp-progress-bar">
+                            <div class="xp-progress" id="xpProgress"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <h2 class="section-title">What to do now?</h2>
+                <div class="quick-actions">
+                    <div class="action-card" onclick="window.location.href='../user/daily_bonus.html'">
+                        <div class="icon"><i class="fas fa-gift"></i></div>
+                        <div class="title">Daily Bonus</div>
+                    </div>
+                    <div class="action-card" onclick="window.location.href='../user/level_info.html'">
+                        <div class="icon"><i class="fas fa-arrow-up-right-dots"></i></div>
+                        <div class="title">View Levels</div>
+                    </div>
+                     <div class="action-card" onclick="window.location.href='../user/create_ad.html'">
+                        <div class="icon"><i class="fas fa-bullhorn"></i></div>
+                        <div class="title">Create Ad</div>
+                    </div>
+                    <div class="action-card" onclick="window.location.href='../user/manage_ads.html'">
+                        <div class="icon"><i class="fas fa-tasks"></i></div>
+                        <div class="title">Manage Ads</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer Navigation -->
+        <nav class="footer-nav">
+            <a href="dashboard.html" class="nav-button active"><i class="icon fa-solid fa-house"></i>Home</a>
+            <a href="tasks.html" class="nav-button"><i class="icon fa-solid fa-list-check"></i>Tasks</a>
+            <a href="wallet.html" class="nav-button"><i class="icon fa-solid fa-wallet"></i>Wallet</a>
+            <a href="referral.html" class="nav-button"><i class="icon fa-solid fa-share-nodes"></i>Referral</a>
+        </nav>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script>
+        // Load dashboard data when the page is ready
+        document.addEventListener('DOMContentLoaded', main.initDashboard);
+    </script>
+</body>
+                                                        </html>
