@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>My Wallet</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* --- Wallet Page Specific Styles --- */
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary-color), #00b863);
+            color: #000;
+            text-align: center;
+        }
+        .balance-card .label { font-size: 16px; opacity: 0.8; }
+        .balance-card .balance-value { font-size: 40px; font-weight: 800; letter-spacing: 1px; }
+        
+        .wallet-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .wallet-action-btn {
+            background-color: var(--card-bg);
+            padding: 15px 10px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            color: var(--text-color);
+        }
+        .wallet-action-btn .icon { font-size: 24px; color: var(--primary-color); margin-bottom: 8px; }
+        .wallet-action-btn .title { font-weight: 600; font-size: 14px; }
+        
+        #transactionHistory { list-style: none; padding: 0; }
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--secondary-color);
+        }
+        .transaction-icon {
+            font-size: 20px;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        .transaction-item.earn .transaction-icon { background-color: rgba(0, 230, 118, 0.1); color: var(--primary-color); }
+        .transaction-item.withdraw .transaction-icon { background-color: rgba(255, 152, 0, 0.1); color: var(--accent-color); }
+        .transaction-item.transfer .transaction-icon { background-color: rgba(33, 150, 243, 0.1); color: #2196f3; }
+        .transaction-item.deposit .transaction-icon { background-color: rgba(156, 39, 176, 0.1); color: var(--level-color); }
+
+        .transaction-details .description { font-weight: 600; }
+        .transaction-details .date { font-size: 12px; color: var(--text-muted-color); }
+        .transaction-amount { margin-left: auto; font-weight: 700; }
+        .transaction-amount.credit { color: var(--primary-color); }
+        .transaction-amount.debit { color: var(--error-color); }
+
+        /* --- Modal Styles --- */
+        .modal-overlay { /* Already in tasks.html, can be reused */ }
+        .modal-content input {
+             width: 100%; background: var(--secondary-color); border: 1px solid #555;
+            padding: 12px; border-radius: 8px; color: var(--text-color); margin-top: 10px;
+        }
+         .modal-content .info-text {
+            font-size: 12px;
+            color: var(--text-muted-color);
+            margin-top: 15px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main>
+            <div id="loader" class="loader"></div>
+            <div id="walletContent" style="display: none;">
+                <!-- Balance Card -->
+                <div class="card balance-card">
+                    <p class="label">Total Points</p>
+                    <h1 class="balance-value" id="balanceValue">0</h1>
+                </div>
+
+                <!-- Actions -->
+                <div class="wallet-actions">
+                    <button class="wallet-action-btn" id="depositBtn">
+                        <div class="icon"><i class="fas fa-arrow-down"></i></div>
+                        <div class="title">Deposit</div>
+                    </button>
+                    <button class="wallet-action-btn" id="withdrawBtn">
+                        <div class="icon"><i class="fas fa-arrow-up"></i></div>
+                        <div class="title">Withdraw</div>
+                    </button>
+                    <button class="wallet-action-btn" id="transferBtn">
+                        <div class="icon"><i class="fas fa-exchange-alt"></i></div>
+                        <div class="title">Transfer</div>
+                    </button>
+                </div>
+
+                <!-- Transaction History -->
+                <h2 class="section-title">Recent Transactions</h2>
+                <ul id="transactionHistory">
+                    <!-- History will be loaded here -->
+                </ul>
+            </div>
+        </main>
+
+        <!-- Footer Navigation -->
+        <nav class="footer-nav">
+             <a href="dashboard.html" class="nav-button"><i class="icon fa-solid fa-house"></i>Home</a>
+            <a href="tasks.html" class="nav-button"><i class="icon fa-solid fa-list-check"></i>Tasks</a>
+            <a href="wallet.html" class="nav-button active"><i class="icon fa-solid fa-wallet"></i>Wallet</a>
+            <a href="referral.html" class="nav-button"><i class="icon fa-solid fa-share-nodes"></i>Referral</a>
+        </nav>
+    </div>
+
+    <!-- Generic Modal for Deposit, Withdraw, Transfer -->
+    <div class="modal-overlay" id="walletModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"></h3>
+                <span class="modal-close" id="modalClose">×</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/wallet.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', wallet.init);
+    </script>
+</body>
+      </html>
